@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProofBench — requirements that test themselves</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="plate top-plate">
+  <div class="brand">
+    <div class="brand-name">PROOFBENCH</div>
+    <div class="brand-sub">SPEC CALIBRATION CONSOLE · KANE-VERIFY</div>
+  </div>
+  <div class="run-state">
+    <div class="readout-label">RUN STATE</div>
+    <div class="readout" id="run-state">IDLE</div>
+  </div>
+  <div class="run-state">
+    <div class="readout-label">VERDICT</div>
+    <div class="readout verdict-idle" id="verdict-lamp">— NO RUN —</div>
+  </div>
+</header>
+
+<p class="lede">Specs lie politely. Paste one in, and this bench extracts its
+verifiable claims, generates one executable check per claim, measures them
+against the target, and hands you an <strong>evidence pack</strong> — claim →
+check → observed result. Then export the same checks as a test plan for
+Kane CLI.</p>
+
+<main>
+  <section class="plate" aria-labelledby="h-specimen">
+    <h2 id="h-specimen"><span class="mod-no">01</span> SPECIMEN — PASTE THE SPEC</h2>
+    <label class="field-label" for="spec-input">Product spec (one claim per line works best)</label>
+    <textarea id="spec-input" rows="12" spellcheck="false"
+      placeholder="LedgerLite supports CSV export of all reports.&#10;GET /health returns status 200.&#10;The maximum upload size is 10 MB."></textarea>
+    <div class="row">
+      <button type="button" id="btn-sample" class="btn btn-quiet">LOAD SAMPLE SPEC</button>
+      <button type="button" id="btn-run" class="btn btn-primary">▶ CALIBRATE — EXTRACT &amp; MEASURE</button>
+    </div>
+    <p class="error" id="spec-error" role="alert" hidden></p>
+    <p class="note">Target: <strong>LedgerLite</strong> — the bundled demo target
+    (simulated ground truth). Its facts deliberately disagree with the sample
+    spec on 3 claims: a bench that never reports FAIL proves nothing.</p>
+  </section>
+
+  <section class="plate" aria-labelledby="h-claims">
+    <h2 id="h-claims"><span class="mod-no">02</span> CLAIMS EXTRACTED</h2>
+    <div id="claims-empty" class="empty">No run yet. Claims will appear here, one row per extracted claim, with the source line they came from.</div>
+    <div class="table-wrap" id="claims-wrap" hidden>
+      <table>
+        <thead><tr><th>Claim</th><th>What will be measured</th><th>Source</th><th>Check</th></tr></thead>
+        <tbody id="claims-body"></tbody>
+      </table>
+    </div>
+    <div id="unparsed-wrap" hidden>
+      <h3 class="sub-head amber">UNPARSED LINES — REPORTED, NEVER SILENTLY DROPPED</h3>
+      <ul id="unparsed-list" class="unparsed"></ul>
+    </div>
+  </section>
+
+  <section class="plate graticule" aria-labelledby="h-measure">
+    <h2 id="h-measure"><span class="mod-no">03</span> MEASUREMENT — CLAIM → CHECK → RESULT</h2>
+    <svg id="trace" viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true" hidden>
+      <polyline id="trace-line" points="" fill="none" stroke="#57E389" stroke-width="2.5"/>
+    </svg>
+    <div id="results-empty" class="empty">No measurements yet.</div>
+    <div class="table-wrap" id="results-wrap" hidden>
+      <table>
+        <thead><tr><th>Claim</th><th>Expected</th><th>Observed</th><th>Result</th></tr></thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+    <p class="summary-readout" id="summary" hidden></p>
+  </section>
+
+  <section class="plate" aria-labelledby="h-pack">
+    <h2 id="h-pack"><span class="mod-no">04</span> EVIDENCE PACK</h2>
+    <p class="note">The full run, sealed with a SHA-256 integrity hash over the
+    claims and results. Anyone can re-verify the pack against the hash.</p>
+    <div class="row">
+      <a class="btn btn-quiet dl" id="dl-json" href="/api/pack.json" download>↓ EVIDENCE PACK (.JSON)</a>
+      <a class="btn btn-quiet dl" id="dl-md" href="/api/pack.md" download>↓ EVIDENCE PACK (.MD)</a>
+    </div>
+    <p class="hash-line" id="hash-line" hidden>SPEC SHA-256 <code id="spec-hash"></code><br>
+    PACK INTEGRITY <code id="pack-hash"></code></p>
+  </section>
+
+  <section class="plate" aria-labelledby="h-kane">
+    <h2 id="h-kane"><span class="mod-no">05</span> KANE CHANNEL</h2>
+    <p class="note">The generated checks export as a documented JSON test plan
+    (<code>kane-verify/test-plan v1</code>) — the stable input the Kane CLI
+    adapter maps from. The mapping to Kane's native script format is written
+    once the real Kane CLI is in hand; nothing here pretends to be a native
+    Kane script, and no Kane run has been faked.</p>
+    <div class="row">
+      <a class="btn btn-quiet dl" id="dl-plan" href="/api/kane-plan.json" download>↓ KANE TEST PLAN (.JSON)</a>
+    </div>
+    <div class="kane-status" id="kane-status">
+      <div class="readout-label">KANE CLI RESULTS</div>
+      <div class="readout amber" id="kane-state">AWAITING FIRST KANE RUN</div>
+      <p class="note" id="kane-detail">No Kane CLI results have been imported yet. Export the test plan, run it with Kane CLI, then import the results file here.</p>
+      <div class="table-wrap" id="kane-results-wrap" hidden>
+        <table>
+          <thead><tr><th>Check</th><th>Status</th><th>Output</th></tr></thead>
+          <tbody id="kane-results-body"></tbody>
+        </table>
+      </div>
+      <label class="field-label" for="kane-file">Import a Kane results JSON file ({results: [{check_id, status, output}]})</label>
+      <input type="file" id="kane-file" accept="application/json,.json">
+      <p class="error" id="kane-error" role="alert" hidden></p>
+    </div>
+  </section>
+</main>
+
+<footer class="plate foot">
+  ProofBench · Kane CLI Online Hackathon (TestMu AI) · Lane 4 — Requirements
+  that test themselves · Demo target is simulated; imported Kane results are
+  labelled with unverified provenance. Nothing on this bench is faked.
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
