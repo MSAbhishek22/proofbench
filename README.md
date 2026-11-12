@@ -12,6 +12,8 @@ Built for the **Kane CLI Online Hackathon** (TestMu AI), Lane 4 —
 documented JSON test plan, ready to be driven by **Kane CLI**; Kane's
 results import back into the same bench, next to the local measurements.
 
+**Live:** https://proofbench-xi.vercel.app · **Code:** https://github.com/MSAbhishek22/proofbench
+
 ## The demo in 30 seconds
 
 The bundled target is **LedgerLite**, a fictional accounting API with known
