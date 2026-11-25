@@ -6,6 +6,8 @@
 <title>ProofBench — requirements that test themselves</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/static/style.css">
+<style>#hero3d{display:block;width:100%;max-width:1100px;height:260px;margin:0 auto 8px;background:#181c20;border:1px solid #2a3036}.scroll-cue{color:#57e389}</style>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
 <header class="plate top-plate">
@@ -28,6 +30,8 @@ verifiable claims, generates one executable check per claim, measures them
 against the target, and hands you an <strong>evidence pack</strong> — claim →
 check → observed result. Then export the same checks as a test plan for
 Kane CLI.</p>
+<canvas id="hero3d" aria-label="Three.js 3D calibration bench: claim nodes on a bench, green for pass, red for fail, joined by a measurement trace. Drag to spin."></canvas>
+<p><a class="scroll-cue" href="#h-specimen">Scroll to the bench &darr;</a></p>
 
 <main>
   <section class="plate" aria-labelledby="h-specimen">
@@ -121,5 +125,69 @@ Kane CLI.</p>
 </footer>
 
 <script src="/static/app.js"></script>
+<script>
+(function(){
+var cv=document.getElementById('hero3d');
+if(!cv||!window.THREE){return;}
+var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});}
+catch(e){return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(50,2,0.1,100);
+camera.position.set(0,0.4,5.4);
+camera.lookAt(0,0,0);
+var group=new THREE.Group();
+scene.add(group);
+
+var platform=new THREE.Mesh(new THREE.BoxGeometry(4.4,0.18,2.2),new THREE.MeshBasicMaterial({color:0x2a3036}));
+platform.position.y=-1.15;
+group.add(platform);
+var claimCols=[0x57e389,0x57e389,0xe5534b,0x57e389,0xe8a33d,0x57e389,0xe5534b,0x57e389,0x57e389,0x57e389];
+var tops=[];
+for(var r=0;r<2;r++){
+for(var i=0;i<5;i++){
+var node=new THREE.Mesh(new THREE.BoxGeometry(0.52,0.52,0.52),new THREE.MeshBasicMaterial({color:claimCols[r*5+i]}));
+node.position.set(-1.6+i*0.8,-0.55+r*0.75,r===0?-0.55:0.55);
+group.add(node);
+tops.push(new THREE.Vector3(node.position.x,node.position.y+0.3,node.position.z));
+}
+}
+var trace=new THREE.Line(new THREE.BufferGeometry().setFromPoints(tops),new THREE.LineBasicMaterial({color:0x57e389}));
+group.add(trace);
+
+function resize(){
+var w=cv.clientWidth||800;
+var h=cv.clientHeight||260;
+renderer.setSize(w,h,false);
+camera.aspect=w/h;
+camera.updateProjectionMatrix();
+}
+window.addEventListener('resize',resize);
+resize();
+var dragging=false,lastX=0,vel=0;
+cv.addEventListener('pointerdown',function(e){dragging=true;lastX=e.clientX;});
+window.addEventListener('pointerup',function(){dragging=false;});
+cv.addEventListener('pointermove',function(e){
+if(!dragging){return;}
+var dx=e.clientX-lastX;
+lastX=e.clientX;
+group.rotation.y+=dx*0.005;
+vel=dx*0.0004;
+});
+var start=Date.now();
+function tick(){
+requestAnimationFrame(tick);
+var t=(Date.now()-start)/1000;
+if(!document.hidden&&!reduced){
+group.rotation.y+=0.0035+vel;
+vel*=0.95;
+}
+renderer.render(scene,camera);
+}
+tick();
+})();
+</script>
 </body>
 </html>
