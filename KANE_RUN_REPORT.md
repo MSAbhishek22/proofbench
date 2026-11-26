@@ -243,3 +243,114 @@ EXIT=0
 4. Import Kane's real output through `/api/kane/import`, flip the provenance
    label from AWAITING to Kane-produced **only with that real output in hand**,
    and append the run logs to this report.
+
+---
+
+## 26 Nov 2026 — THE REAL KANE RUN (deadline day)
+
+Credentials were fetched once, with the user's explicit one-time
+authorisation, from his own TestMu account profile page in his browser
+session. The values are never written here or anywhere in this repo; the
+CLI keeps them in its own profile store (~/.testmuai, outside this repo).
+
+### Login
+
+- Attempt 1 (~13:21 IST): REJECTED by the server — "Credentials not
+  valid. Please use valid credentials."
+- The two values were re-read character-for-character from the account's
+  Credentials page: identical to attempt 1.
+- Retry (~13:54 IST): SUCCESS — "Logged in as default [prod] via basic
+  auth"; `whoami` Authenticated; project auto-selected "KaneAI
+  Generated"; folder "Untitled".
+- Balance at login: 11,200 credits. CLI: kane-cli v0.10.9.
+- Config: `kane-cli config set-url https://proofbench-xi.vercel.app`.
+
+### Bench ground truth (the app measuring its own demo spec)
+
+POST /api/verify on sample/spec.md → 10 checks · 7 PASS · 3 FAIL
+(CHK-02, CHK-05, CHK-10) · verdict SPEC DISPUTED · spec SHA-256
+1241e9dea7c07d170bac3aa0d08d21… (runs/2026-11-26/verify.json).
+The three false claims: PDF export (does not exist), upload size
+10 MB (really 25 MB), webhooks not supported (they exist).
+
+### Pass A — the three flows
+
+Against the LIVE URL first: the Kane agent loaded the live app, loaded
+the sample spec and started CALIBRATE — but the app's own POST to
+/api/verify from that sandboxed browser failed twice with
+net::ERR_EMPTY_RESPONSE (the sandbox's egress tunnel resets that POST;
+a direct request to https://proofbench-xi.vercel.app/api/verify
+returns HTTP 200 with the identical pack, so the live API is healthy).
+Two further live flow runs failed on sequencing: each CLI invocation
+starts from fresh page state, so objectives that assumed a completed
+calibration checked too early. All three failures are recorded in the
+first versions of runs/2026-11-26/flow-*.ndjson (overwritten by the
+successful re-runs below; the failure summaries were extracted before
+overwriting and are quoted in the working notes).
+
+Re-run against the app's own local server (http://127.0.0.1:8773/ —
+the same code that is deployed; it returns the identical evidence
+pack), with self-contained objectives:
+
+- flow-calibrate: PASSED — sample spec loaded, CALIBRATE ran, verdict
+  produced.
+- flow-verdict: PASSED — results table confirmed 7 PASS and 3 FAIL,
+  verdict SPEC DISPUTED.
+- flow-pack: PASSED — evidence pack offers JSON and Markdown
+  downloads and shows the spec SHA-256 and the pack integrity hash.
+
+### Pass B — the ten plan steps, one Kane run each
+
+Each objective was the plan step's expect sentence, prefixed with the
+calibrate preamble and an instruction to report the PASS/FAIL status
+shown in the results table. Every reading matched the bench exactly:
+
+| Check | Kane reading | Bench |
+|---|---|---|
+| CHK-01 csv export | PASS | PASS |
+| CHK-02 pdf export | FAIL | FAIL |
+| CHK-03 GET /health 200 | PASS | PASS |
+| CHK-04 GET /receipt receipt_id | PASS | PASS |
+| CHK-05 upload size 10 MB | FAIL | FAIL |
+| CHK-06 retention 30 days | PASS | PASS |
+| CHK-07 latency ≤ 200 ms | PASS | PASS |
+| CHK-08 requires authentication | PASS | PASS |
+| CHK-09 never stores passwords in plain text | PASS | PASS |
+| CHK-10 webhooks not supported | FAIL | FAIL |
+
+Note: the first CHK-02 attempt (expect sentence verbatim, no
+table-reading instruction) ended in an agent assertion error — the
+agent asserted the claim instead of reading the measured row. Its
+run_end (status failed, 25.46 credits) is recorded in the working
+notes; the re-run above is the operative reading.
+
+Full NDJSON session logs: runs/2026-11-26/plan-CHK-*.ndjson and
+flow-*.ndjson.
+
+### Import
+
+runs/2026-11-26/import.json was built ONLY from the Pass B NDJSON
+run_end summaries (status per check + the agent's own summary text) —
+no hand-written results.
+
+- Local bench: POST /api/kane/import → state "imported";
+  GET /api/kane/status shows the 10 imported results.
+- Live deployment: POST https://proofbench-xi.vercel.app/api/kane/import
+  → state "imported"; a separate GET of the live /api/kane/status at
+  ~14:36 IST also showed state "imported" with the 10 results.
+  (Serverless state may not persist indefinitely; recorded as
+  observed at that time, not as a guarantee.)
+- The bench labels imported results "IMPORTED RESULTS — PROVENANCE
+  NOT VERIFIED" by design: importing a file is not proof Kane
+  produced it. The NDJSON logs in runs/2026-11-26/ are the
+  provenance evidence for this import.
+
+### Credits and incidents
+
+- Balance: 11,200 at login → 10,738.28 after all runs (Pass A live
+  attempt, local Pass A, Pass B, plus two attempts interrupted by a
+  VM service restart).
+- The restart also wiped the kane-cli binary (it lives outside the
+  home directory); reinstalled with `npm install -g
+  @testmuai/kane-cli` (v0.10.9); the login profile in ~/.testmuai
+  survived, so no re-login was needed.

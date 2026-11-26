@@ -1,0 +1,114 @@
+{
+  "format": "kane-verify/test-plan",
+  "version": 1,
+  "adapter_note": "ProofBench JSON test plan — the input the Kane CLI adapter maps from. Not a native Kane script; the mapping is written once the real Kane CLI is in hand.",
+  "target": "LedgerLite (bundled demo target — simulated ground truth)",
+  "steps": [
+    {
+      "step_id": "CHK-01",
+      "claim_id": "CLM-01",
+      "claim_text": "LedgerLite supports CSV export of all reports.",
+      "action": "supports",
+      "params": {
+        "subject": "csv export"
+      },
+      "expect": "Measure whether the target supports 'csv export'."
+    },
+    {
+      "step_id": "CHK-02",
+      "claim_id": "CLM-02",
+      "claim_text": "LedgerLite supports PDF export of all reports.",
+      "action": "supports",
+      "params": {
+        "subject": "pdf export"
+      },
+      "expect": "Measure whether the target supports 'pdf export'."
+    },
+    {
+      "step_id": "CHK-03",
+      "claim_id": "CLM-03",
+      "claim_text": "GET /health returns status 200.",
+      "action": "endpoint_status",
+      "params": {
+        "method": "GET",
+        "path": "/health",
+        "expected_status": 200
+      },
+      "expect": "Call GET /health; expect HTTP 200."
+    },
+    {
+      "step_id": "CHK-04",
+      "claim_id": "CLM-04",
+      "claim_text": "GET /receipt returns a body containing receipt_id.",
+      "action": "endpoint_contains",
+      "params": {
+        "method": "GET",
+        "path": "/receipt",
+        "token": "receipt_id"
+      },
+      "expect": "Call GET /receipt; expect the body to contain 'receipt_id'."
+    },
+    {
+      "step_id": "CHK-05",
+      "claim_id": "CLM-05",
+      "claim_text": "The maximum upload size is 10 MB.",
+      "action": "value_equals",
+      "params": {
+        "label": "upload size",
+        "expected_value": 10,
+        "unit": "MB"
+      },
+      "expect": "Read the target's 'upload size'; expect 10 MB."
+    },
+    {
+      "step_id": "CHK-06",
+      "claim_id": "CLM-06",
+      "claim_text": "Data retention is 30 days.",
+      "action": "value_equals",
+      "params": {
+        "label": "retention",
+        "expected_value": 30,
+        "unit": "days"
+      },
+      "expect": "Read the target's 'retention'; expect 30 days."
+    },
+    {
+      "step_id": "CHK-07",
+      "claim_id": "CLM-07",
+      "claim_text": "The API responds within 200 ms for health checks.",
+      "action": "latency_max",
+      "params": {
+        "max_ms": 200
+      },
+      "expect": "Measure response latency; expect at most 200 ms."
+    },
+    {
+      "step_id": "CHK-08",
+      "claim_id": "CLM-08",
+      "claim_text": "All endpoints require authentication.",
+      "action": "requires_auth",
+      "params": {},
+      "expect": "Measure whether the target requires authentication."
+    },
+    {
+      "step_id": "CHK-09",
+      "claim_id": "CLM-09",
+      "claim_text": "LedgerLite never stores passwords in plain text.",
+      "action": "never",
+      "params": {
+        "phrase": "stores passwords in plain text"
+      },
+      "expect": "Measure whether the target never does this: 'stores passwords in plain text'."
+    },
+    {
+      "step_id": "CHK-10",
+      "claim_id": "CLM-10",
+      "claim_text": "LedgerLite does not support webhooks.",
+      "action": "not_supports",
+      "params": {
+        "subject": "webhooks"
+      },
+      "expect": "Measure whether the target does NOT support 'webhooks'."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+ "results": [
+  {
+   "check_id": "CHK-01",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification in ProofBench."
+  },
+  {
+   "check_id": "CHK-02",
+   "status": "FAIL",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE to generate the results table."
+  },
+  {
+   "check_id": "CHK-03",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench."
+  },
+  {
+   "check_id": "CHK-04",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE until the results table was available."
+  },
+  {
+   "check_id": "CHK-05",
+   "status": "FAIL",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE."
+  },
+  {
+   "check_id": "CHK-06",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE."
+  },
+  {
+   "check_id": "CHK-07",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench."
+  },
+  {
+   "check_id": "CHK-08",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench."
+  },
+  {
+   "check_id": "CHK-09",
+   "status": "PASS",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE."
+  },
+  {
+   "check_id": "CHK-10",
+   "status": "FAIL",
+   "output": "Kane agent run (26 Nov 2026, local bench): Loaded the sample specification on ProofBench and ran CALIBRATE until the results table was available."
+  }
+ ]
+}

@@ -1,0 +1,286 @@
+{
+  "ok": true,
+  "pack": {
+    "pack_version": 1,
+    "product": "ProofBench",
+    "generated_at": "2026-11-26T08:25:38+00:00",
+    "target": {
+      "name": "LedgerLite (bundled demo target — simulated ground truth)",
+      "kind": "demo"
+    },
+    "spec_sha256": "1241e9dea7c07d170bac3aa0d08d21173b8159f6e64f656e76f6a1d429d951dc",
+    "claims": [
+      {
+        "type": "supports",
+        "subject": "csv export",
+        "line": 3,
+        "source": "LedgerLite supports CSV export of all reports.",
+        "id": "CLM-01"
+      },
+      {
+        "type": "supports",
+        "subject": "pdf export",
+        "line": 4,
+        "source": "LedgerLite supports PDF export of all reports.",
+        "id": "CLM-02"
+      },
+      {
+        "type": "endpoint_status",
+        "method": "GET",
+        "path": "/health",
+        "expected_status": 200,
+        "line": 5,
+        "source": "GET /health returns status 200.",
+        "id": "CLM-03"
+      },
+      {
+        "type": "endpoint_contains",
+        "method": "GET",
+        "path": "/receipt",
+        "token": "receipt_id",
+        "line": 6,
+        "source": "GET /receipt returns a body containing receipt_id.",
+        "id": "CLM-04"
+      },
+      {
+        "type": "value_equals",
+        "label": "upload size",
+        "expected_value": 10,
+        "unit": "MB",
+        "line": 7,
+        "source": "The maximum upload size is 10 MB.",
+        "id": "CLM-05"
+      },
+      {
+        "type": "value_equals",
+        "label": "retention",
+        "expected_value": 30,
+        "unit": "days",
+        "line": 8,
+        "source": "Data retention is 30 days.",
+        "id": "CLM-06"
+      },
+      {
+        "type": "latency_max",
+        "max_ms": 200,
+        "line": 9,
+        "source": "The API responds within 200 ms for health checks.",
+        "id": "CLM-07"
+      },
+      {
+        "type": "requires_auth",
+        "line": 10,
+        "source": "All endpoints require authentication.",
+        "id": "CLM-08"
+      },
+      {
+        "type": "never",
+        "phrase": "stores passwords in plain text",
+        "line": 11,
+        "source": "LedgerLite never stores passwords in plain text.",
+        "id": "CLM-09"
+      },
+      {
+        "type": "not_supports",
+        "subject": "webhooks",
+        "line": 12,
+        "source": "LedgerLite does not support webhooks.",
+        "id": "CLM-10"
+      }
+    ],
+    "checks": [
+      {
+        "id": "CHK-01",
+        "claim_id": "CLM-01",
+        "kind": "supports",
+        "description": "Measure whether the target supports 'csv export'.",
+        "params": {
+          "subject": "csv export"
+        }
+      },
+      {
+        "id": "CHK-02",
+        "claim_id": "CLM-02",
+        "kind": "supports",
+        "description": "Measure whether the target supports 'pdf export'.",
+        "params": {
+          "subject": "pdf export"
+        }
+      },
+      {
+        "id": "CHK-03",
+        "claim_id": "CLM-03",
+        "kind": "endpoint_status",
+        "description": "Call GET /health; expect HTTP 200.",
+        "params": {
+          "method": "GET",
+          "path": "/health",
+          "expected_status": 200
+        }
+      },
+      {
+        "id": "CHK-04",
+        "claim_id": "CLM-04",
+        "kind": "endpoint_contains",
+        "description": "Call GET /receipt; expect the body to contain 'receipt_id'.",
+        "params": {
+          "method": "GET",
+          "path": "/receipt",
+          "token": "receipt_id"
+        }
+      },
+      {
+        "id": "CHK-05",
+        "claim_id": "CLM-05",
+        "kind": "value_equals",
+        "description": "Read the target's 'upload size'; expect 10 MB.",
+        "params": {
+          "label": "upload size",
+          "expected_value": 10,
+          "unit": "MB"
+        }
+      },
+      {
+        "id": "CHK-06",
+        "claim_id": "CLM-06",
+        "kind": "value_equals",
+        "description": "Read the target's 'retention'; expect 30 days.",
+        "params": {
+          "label": "retention",
+          "expected_value": 30,
+          "unit": "days"
+        }
+      },
+      {
+        "id": "CHK-07",
+        "claim_id": "CLM-07",
+        "kind": "latency_max",
+        "description": "Measure response latency; expect at most 200 ms.",
+        "params": {
+          "max_ms": 200
+        }
+      },
+      {
+        "id": "CHK-08",
+        "claim_id": "CLM-08",
+        "kind": "requires_auth",
+        "description": "Measure whether the target requires authentication.",
+        "params": {}
+      },
+      {
+        "id": "CHK-09",
+        "claim_id": "CLM-09",
+        "kind": "never",
+        "description": "Measure whether the target never does this: 'stores passwords in plain text'.",
+        "params": {
+          "phrase": "stores passwords in plain text"
+        }
+      },
+      {
+        "id": "CHK-10",
+        "claim_id": "CLM-10",
+        "kind": "not_supports",
+        "description": "Measure whether the target does NOT support 'webhooks'.",
+        "params": {
+          "subject": "webhooks"
+        }
+      }
+    ],
+    "results": [
+      {
+        "check_id": "CHK-01",
+        "claim_id": "CLM-01",
+        "kind": "supports",
+        "status": "PASS",
+        "expected": "supported",
+        "observed": "supported"
+      },
+      {
+        "check_id": "CHK-02",
+        "claim_id": "CLM-02",
+        "kind": "supports",
+        "status": "FAIL",
+        "expected": "supported",
+        "observed": "not supported"
+      },
+      {
+        "check_id": "CHK-03",
+        "claim_id": "CLM-03",
+        "kind": "endpoint_status",
+        "status": "PASS",
+        "expected": "HTTP 200",
+        "observed": "HTTP 200"
+      },
+      {
+        "check_id": "CHK-04",
+        "claim_id": "CLM-04",
+        "kind": "endpoint_contains",
+        "status": "PASS",
+        "expected": "body containing 'receipt_id'",
+        "observed": "{\"receipt_id\": \"rcpt_9182\", \"total\": 499.00}"
+      },
+      {
+        "check_id": "CHK-05",
+        "claim_id": "CLM-05",
+        "kind": "value_equals",
+        "status": "FAIL",
+        "expected": "10 MB",
+        "observed": "25 MB"
+      },
+      {
+        "check_id": "CHK-06",
+        "claim_id": "CLM-06",
+        "kind": "value_equals",
+        "status": "PASS",
+        "expected": "30 days",
+        "observed": "30 days"
+      },
+      {
+        "check_id": "CHK-07",
+        "claim_id": "CLM-07",
+        "kind": "latency_max",
+        "status": "PASS",
+        "expected": "<= 200 ms",
+        "observed": "142 ms"
+      },
+      {
+        "check_id": "CHK-08",
+        "claim_id": "CLM-08",
+        "kind": "requires_auth",
+        "status": "PASS",
+        "expected": "authentication required",
+        "observed": "authentication required"
+      },
+      {
+        "check_id": "CHK-09",
+        "claim_id": "CLM-09",
+        "kind": "never",
+        "status": "PASS",
+        "expected": "never happens",
+        "observed": "holds"
+      },
+      {
+        "check_id": "CHK-10",
+        "claim_id": "CLM-10",
+        "kind": "not_supports",
+        "status": "FAIL",
+        "expected": "not supported",
+        "observed": "supported"
+      }
+    ],
+    "unparsed": [
+      {
+        "line": 13,
+        "source": "LedgerLite is the friendliest accounting tool ever made."
+      }
+    ],
+    "summary": {
+      "total_claims": 10,
+      "passed": 7,
+      "failed": 3,
+      "unparsed_lines": 1
+    },
+    "verdict": "SPEC DISPUTED",
+    "integrity_sha256": "9ba69eb23132c05fa3b32fa4c90b10b9bb8a4a83ecf861388842c6fc5b3bc0bf"
+  }
+}

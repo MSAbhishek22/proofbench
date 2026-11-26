@@ -63,10 +63,19 @@ dispute the spec.
   stable input the Kane adapter maps from. It is **not** claimed to be a
   native Kane CLI script: Kane's native format is mapped once the real CLI
   is in hand (see `app/checks.py`).
-- **No Kane run has happened yet.** The Kane channel honestly reads
-  `AWAITING FIRST KANE RUN` until results are imported, and imported
-  results are labelled *provenance not verified* — importing a file is not
-  proof Kane produced it.
+- **A real Kane run has happened (26 Nov 2026).** Kane CLI
+  (v0.10.9, authenticated) ran the three ProofBench flows and all
+  ten exported plan steps against the app; every Kane reading
+  matched the bench (7 PASS · 3 FAIL · SPEC DISPUTED), and the
+  results were imported into the bench's Kane channel (locally and
+  on the live deployment, verified ~14:36 IST). Imported results
+  are labelled *provenance not verified* — importing a file is not
+  proof Kane produced it; the session logs in `runs/2026-11-26/`
+  and `KANE_RUN_REPORT.md` are the provenance evidence. One honest
+  limit: the sandboxed browser's tunnel reset the live site's
+  /api/verify POST, so the interactive runs drove the app's own
+  local server (identical code, identical evidence pack); the live
+  API itself was verified healthy by direct request.
 - Extraction is deliberately narrow: claims outside the 8 patterns are
   unparsed, by design, and shown to the user.
 
